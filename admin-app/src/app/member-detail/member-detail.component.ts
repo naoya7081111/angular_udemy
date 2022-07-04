@@ -1,5 +1,8 @@
+import { Location } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Member } from '../member';
+import { MemberService } from '../member.service';
 
 @Component({
   selector: 'app-member-detail',
@@ -8,7 +11,28 @@ import { Member } from '../member';
 })
 export class MemberDetailComponent implements OnInit {
   @Input() member: Member;
-  constructor() {}
+  constructor(
+    private route: ActivatedRoute,
+    private memberService: MemberService,
+    private location: Location
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getMember();
+  }
+
+  getMember(): void {
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.memberService
+      .getMember(id)
+      .subscribe((member) => (this.member = member));
+  }
+
+  goBack(): void {
+    this.location.back();
+  }
+
+  save(): void {
+    this.memberService.updateMember(this.member).subscribe(() => this.goBack());
+  }
 }

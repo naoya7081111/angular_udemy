@@ -24,4 +24,17 @@ export class MembersComponent implements OnInit {
       .getMembers()
       .subscribe((members) => (this.members = members));
   }
+
+  add(name: string): void {
+    name = name.trim();
+    if (!name) return;
+    this.memberService.addMember({ name } as Member).subscribe((member) => {
+      this.members.push(member);
+    });
+  }
+
+  delete(member: Member): void {
+    this.members = this.members.filter((m) => m !== member);
+    this.memberService.deleteMember(member).subscribe(); // subscribeを実行しないとObservableを返されるだけになる。httpメソッドを呼び起こすにはつける必要あり。
+  }
 }
