@@ -1,0 +1,15 @@
+<div id="search-component">
+  <h4><label for="search-box">社員検索</label></h4>
+  <input
+    #searchBox
+    id="search-box"
+    (input)="search(searchBox.value)"
+    type="text"
+  />
+  <ul class="search-result">
+    <!-- MEMO: "| async" はobservableをsubscribeに自動で実行してくれるもの -->
+    <li *ngFor="let member of members$ | async">
+      <a routerLink="/detail/{{ member.id }}">{{ member.name }}</a>
+    </li>
+  </ul>
+</div>

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Member } from './member';
-import { MEMBERS } from './mock-members';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
@@ -60,6 +59,16 @@ export class MemberService {
     return this.http.delete<Member>(url, this.httpOption).pipe(
       tap((_) => this.log(`社員データ(id=${id})を削除しました。`)),
       catchError(this.handleError<Member>('deleteMember'))
+    );
+  }
+
+  searchMembers(term: string): Observable<Member[]> {
+    if (!term.trim()) {
+      return of([]);
+    }
+    return this.http.get<Member[]>(`${this.membersUrl}/?name=${term}`).pipe(
+      tap((_) => this.log(`${term}にマッチする社員データは見つかりました。`)),
+      catchError(this.handleError<Member[]>('searchMember', []))
     );
   }
 
